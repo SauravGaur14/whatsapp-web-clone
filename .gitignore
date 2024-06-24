@@ -1,0 +1,65 @@
+# Node modules directories
+whatsapp-client/node_modules/
+whatsapp-server/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variable files
+/whatsapp-server/config.env
+
+# Firebase config file
+/whatsapp-client/src/config
+
+# Build directories
+whatsapp-client/dist/
+whatsapp-server/dist/
+
+# Dependency directories
+whatsapp-client/.pnp/
+whatsapp-server/.pnp/
+.pnp.js
+
+# IDE and editor specific files
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# MacOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional Vite files
+whatsapp-client/.env.local
+whatsapp-client/.env.development.local
+whatsapp-client/.env.test.local
+whatsapp-client/.env.production.local
+
+# Optional parcel cache
+whatsapp-client/cache
+whatsapp-client/.parcel-cache
+
+# SASS cache
+whatsapp-client/.sass-cache
+
+# NPM shrinkwrap files
+whatsapp-client/npm-shrinkwrap.json
+whatsapp-server/npm-shrinkwrap.json
+
+# dotenv environment variables file
+.env
+

@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+ *{
+    font-family: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", Ubuntu, Cantarell, "Fira Sans", sans-serif;
+} 
+
+.custom-scrollbar::-webkit-scrollbar{
+    height: 8px !important;
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0c1317;
+  }
+  
+ .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    background: #f1f1f1;
+  }
+
+.custom-scrollbar::-webkit-scrollbar-thumb{
+background-color: #33393c;
+border-radius: 10px;
+}
+
+.messageComponent ::before{
+    content: '';
+    position:absolute;
+    top: 0;
+    right: -12px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg,#202c33 0%, #202c33 50%, transparent 50%, transparent);
+}
+.messageComponent-friend ::before{
+    content: '';
+    position:absolute;
+    top: 0;
+    left: -12px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(-135deg,#202c33 0%, #202c33 50%, transparent 50%, transparent);
+}
+
