@@ -28,7 +28,7 @@ export default function useLogout() {
         navigate("/login");
       })
       .catch((error) => {
-        console.error("Error logging out:", error);
+        alert("Error logging out! Please try again");
       });
   };
 

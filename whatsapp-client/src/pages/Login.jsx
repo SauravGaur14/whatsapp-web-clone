@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../state/userSlice";
@@ -6,8 +7,7 @@ import { useSocket } from "../state/socketContext";
 // FIREBASE
 import {
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   getAuth,
 } from "firebase/auth";
 import { firebaseAuth } from "../config/firebaseConfig";
@@ -19,7 +19,6 @@ import axios from "axios";
 import { FcGoogle } from "react-icons/fc";
 import { PiGearFineDuotone } from "react-icons/pi";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useEffect } from "react";
 import { HOST, LOGIN_USER_ROUTE } from "../utils/Api_routes";
 
 export default function Login() {
@@ -40,48 +39,42 @@ export default function Login() {
     }
   }, [user.uid, updateSocket]);
 
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      const auth = getAuth();
-      try {
-        const result = await getRedirectResult(auth);
-
-        if (result) {
-          const data = result.user;
-          const userInfo = {
-            userName: data.displayName,
-            profileUrl: data.photoURL,
-            uid: data.providerData[0].uid,
-            email: data.email,
-          };
-
-          if (userInfo.email) {
-            const {
-              data: { user: userData },
-            } = await axios.post(`${LOGIN_USER_ROUTE}`, {
-              userInfo,
-            });
-            userInfo.uid = userData._id;
-          }
-
-          dispatch(setUser(userInfo));
-          navigate("/");
-        }
-      } catch (error) {
-        console.error("Failed to get redirect result:", error);
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(`Error details: ${errorCode}, ${errorMessage}`);
-      }
-    };
-
-    handleRedirectResult();
-  }, [dispatch, navigate]);
-
-  const loginHandler = () => {
+  const handleSignInWithPopup = async () => {
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const data = result.user;
+
+      const userInfo = {
+        userName: data.displayName,
+        profileUrl: data.photoURL,
+        uid: data.providerData[0].uid,
+        email: data.email,
+      };
+
+      if (userInfo.email) {
+        const {
+          data: { user: userData },
+        } = await axios.post(`${LOGIN_USER_ROUTE}`, {
+          userInfo,
+        });
+        userInfo.uid = userData._id;
+      }
+
+      dispatch(setUser(userInfo));
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to sign in with popup:", error);
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error details: ${errorCode}, ${errorMessage}`);
+    }
+  };
+
+  const loginHandler = () => {
+    handleSignInWithPopup();
   };
 
   return (
@@ -106,7 +99,7 @@ export default function Login() {
                   new Windows app.
                 </span>
               </div>
-              <button className="bg-button-primary w-max rounded-3xl px-10 py-3 text-sm font-medium text-white">
+              <button className="w-max rounded-3xl bg-button-primary px-10 py-3 text-sm font-medium text-white">
                 Get from Microsoft Store
               </button>
             </div>

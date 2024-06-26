@@ -17,7 +17,6 @@ export default function ChatHeader() {
   const currentChatUser = useSelector((store) => store.currentChatUser);
 
   function startVideoCall() {
-    console.log("starting call");
     dispatch(
       setCalling({
         isCalling: true,
@@ -32,7 +31,6 @@ export default function ChatHeader() {
     });
   }
   async function startVoiceCall() {
-    console.log("starting call");
     dispatch(
       setCalling({
         isCalling: true,

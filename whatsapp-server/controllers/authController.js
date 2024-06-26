@@ -47,7 +47,6 @@ export async function loginUser(req, res, next) {
 export async function getAllUsers(req, res, next) {
   try {
     const users = await User.find().sort({ name: 1 });
-    // console.log(users);
     res.status(200).json({
       status: "success",
       users,

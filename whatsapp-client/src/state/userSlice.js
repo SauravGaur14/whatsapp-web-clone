@@ -16,6 +16,7 @@ const userSlice = createSlice({
       callType: undefined,
       callerName: undefined,
     },
+    ongoingCall: false,
   },
   reducers: {
     setUser: (state, action) => {
@@ -42,6 +43,9 @@ const userSlice = createSlice({
     setIncomingCall: (state, action) => {
       state.incomingCall = action.payload;
     },
+    setOngoingCall: (state, action) => {
+      state.ongoingCall = action.payload;
+    },
   },
 });
 
@@ -53,5 +57,6 @@ export const {
   setSearchInput,
   setCalling,
   setIncomingCall,
+  setOngoingCall
 } = userSlice.actions;
 export default userSlice.reducer;

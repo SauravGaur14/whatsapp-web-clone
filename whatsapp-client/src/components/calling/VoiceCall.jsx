@@ -1,113 +1,3 @@
-// import { useEffect, useRef } from "react";
-// import { useSelector } from "react-redux";
-// import { useSocket } from "../../state/socketContext";
-
-// export default function VoiceCall() {
-//   const user = useSelector((store) => store.user);
-//   const currentChatUser = useSelector((store) => store.currentChatUser);
-//   const { socket } = useSocket();
-
-//   const localStreamRef = useRef(null);
-//   const remoteStreamRef = useRef(null);
-//   const peerConnectionRef = useRef(null);
-
-//   useEffect(() => {
-//     const setupMedia = async () => {
-//       try {
-//         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-//         localStreamRef.current.srcObject = stream;
-
-//         peerConnectionRef.current = new RTCPeerConnection();
-
-//         // Add local stream tracks to peer connection
-//         stream.getTracks().forEach(track => {
-//           peerConnectionRef.current.addTrack(track, stream);
-//         });
-
-//         peerConnectionRef.current.onicecandidate = (event) => {
-//           if (event.candidate) {
-//             socket.emit("ice-candidate", {
-//               to: currentChatUser.uid,
-//               candidate: event.candidate,
-//             });
-//           }
-//         };
-
-//         peerConnectionRef.current.ontrack = (event) => {
-//           remoteStreamRef.current.srcObject = event.streams[0];
-//         };
-
-//         socket.on("ice-candidate", (candidate) => {
-//           if (candidate) {
-//             peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-//           }
-//         });
-
-//         socket.on("sdp-offer", async (offer) => {
-//           if (peerConnectionRef.current.signalingState !== "stable") {
-//             console.warn("Received offer in non-stable state, ignoring.");
-//             return;
-//           }
-
-//           await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(offer));
-//           const answer = await peerConnectionRef.current.createAnswer();
-//           await peerConnectionRef.current.setLocalDescription(answer);
-//           socket.emit("sdp-answer", {
-//             to: currentChatUser.uid,
-//             answer,
-//           });
-//         });
-
-//         socket.on("sdp-answer", async (answer) => {
-//           if (peerConnectionRef.current.signalingState !== "have-local-offer") {
-//             console.warn("Received answer in non-have-local-offer state, ignoring.");
-//             return;
-//           }
-
-//           await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-//         });
-
-//         if (user.calling.isCalling && user.calling.callType === "voice") {
-//           initiateCall();
-//         }
-//       } catch (error) {
-//         console.error("Error setting up media:", error);
-//       }
-//     };
-
-//     const initiateCall = async () => {
-//       if (peerConnectionRef.current.signalingState !== "stable") {
-//         console.warn("Cannot initiate call, signaling state not stable.");
-//         return;
-//       }
-
-//       const offer = await peerConnectionRef.current.createOffer();
-//       await peerConnectionRef.current.setLocalDescription(offer);
-//       socket.emit("sdp-offer", {
-//         to: currentChatUser.uid,
-//         offer,
-//       });
-//     };
-
-//     setupMedia();
-
-//     return () => {
-//       socket.off("ice-candidate");
-//       socket.off("sdp-offer");
-//       socket.off("sdp-answer");
-//       if (peerConnectionRef.current) {
-//         peerConnectionRef.current.close();
-//       }
-//     };
-//   }, [socket, currentChatUser, user.calling]);
-
-//   return (
-//     <div>
-//       <audio ref={localStreamRef} autoPlay muted />
-//       <audio ref={remoteStreamRef} autoPlay />
-//     </div>
-//   );
-// }
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useSocket } from "../../state/socketContext";
@@ -164,7 +54,6 @@ export default function VoiceCall() {
         socket.on("sdp-offer", async (offer) => {
           sdpPromises.current = sdpPromises.current.then(async () => {
             if (peerConnectionRef.current.signalingState !== "stable") {
-              console.warn("Received offer in non-stable state, ignoring.");
               return;
             }
 
@@ -191,14 +80,8 @@ export default function VoiceCall() {
 
         socket.on("sdp-answer", async (answer) => {
           sdpPromises.current = sdpPromises.current.then(async () => {
-            if (
-              peerConnectionRef.current.signalingState !== "have-local-offer"
-            ) {
-              console.warn(
-                "Received answer in non-have-local-offer state, ignoring.",
-              );
+            if (peerConnectionRef.current.signalingState !== "have-local-offer")
               return;
-            }
 
             try {
               await peerConnectionRef.current.setRemoteDescription(
@@ -260,10 +143,13 @@ export default function VoiceCall() {
 
   return (
     <div>
-      <audio ref={localStreamRef} autoPlay muted />
-      <audio ref={remoteStreamRef} autoPlay />
+      <div className="h-[300px] w-[300px] border-red-500">
+        <audio ref={localStreamRef} autoPlay muted />
+      </div>
+
+      <div className="h-[300px] w-[300px] border-blue-500">
+        <audio ref={remoteStreamRef} autoPlay />{" "}
+      </div>
     </div>
   );
 }
-
-

@@ -96,54 +96,45 @@ io.on("connection", (socket) => {
   });
 
   socket.on("request-voice-call", (callDetails) => {
-    console.log("incoming voice call");
-    console.log("callDetails : ", callDetails);
-    console.log("event to be emited to : ", onlineUsers.get(callDetails.to));
-    if (callDetails.to && callDetails.from && onlineUsers.get(callDetails.to)) {
-      console.log("Emiting incomingcallevent");
-      socket
-        .to(onlineUsers.get(callDetails.to))
-        .emit("incoming-voice-call", callDetails);
+    const sendTo = onlineUsers.get(callDetails.to);
+    if (sendTo) {
+      socket.to(sendTo).emit("incoming-voice-call", callDetails);
     }
   });
+
   socket.on("request-video-call", (callDetails) => {
-    console.log("incoming video call");
-    console.log("callDetails : ", callDetails);
-    console.log("event to be emited to : ", onlineUsers.get(callDetails.to));
-    if (callDetails.to && callDetails.from && onlineUsers.get(callDetails.to)) {
-      console.log("Emiting incomingcallevent");
-      socket
-        .to(onlineUsers.get(callDetails.to))
-        .emit("incoming-video-call", callDetails);
+    const sendTo = onlineUsers.get(callDetails.to);
+    if (sendTo) {
+      socket.to(sendTo).emit("incoming-video-call", callDetails);
     }
   });
 
   socket.on("reject-call", (callDetails) => {
-    console.log("call rejected");
+    // console.log("call end event : emiting reject call event to :",
+    //   onlineUsers.get(callDetails.to));
     socket.to(onlineUsers.get(callDetails.to)).emit("rejected-call");
   });
 
   socket.on("ice-candidate", (candidateDetails) => {
-    console.log("Received ICE candidate:", candidateDetails);
     const sendTo = onlineUsers.get(candidateDetails.to);
     if (sendTo) {
-      socket.to(sendTo).emit("ice-candidate", {
-        candidate: candidateDetails.candidate,
-      });
+      socket
+        .to(sendTo)
+        .emit("ice-candidate", { candidate: candidateDetails.candidate });
     }
   });
 
   socket.on("sdp-offer", (offerDetails) => {
     const sendTo = onlineUsers.get(offerDetails.to);
     if (sendTo) {
-      socket.to(sendTo).emit("sdp-offer", offerDetails.offer);
+      socket.to(sendTo).emit("sdp-offer", { offer: offerDetails.offer });
     }
   });
 
   socket.on("sdp-answer", (answerDetails) => {
     const sendTo = onlineUsers.get(answerDetails.to);
     if (sendTo) {
-      socket.to(sendTo).emit("sdp-answer", answerDetails.answer);
+      socket.to(sendTo).emit("sdp-answer", { answer: answerDetails.answer });
     }
   });
 

@@ -21,7 +21,6 @@ export default function Home() {
 
   const handleUpdateOnlineUsers = useCallback(
     (onlineUsers) => {
-      // console.log("online user list updated", onlineUsers);
       dispatch(setOnlineUsers(onlineUsers));
     },
     [dispatch],
